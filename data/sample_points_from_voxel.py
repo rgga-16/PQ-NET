@@ -246,7 +246,8 @@ def process_one(src_shape_hdf5_path):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--src', type=str, default='data', help="file path to source data")
+    # parser.add_argument('--src', type=str, default='data', help="file path to source data")
+    parser.add_argument('--src', type=str, default="/home/fun-linux/Documents/Rgee Gallega/DL-Projects/Datasets/VoxelizedPartNet", help="file path to source data")
     parser.add_argument('--category', type=str, required=True, help="shape category")
     parser.add_argument('-P', '--process', type=int, default=10, help="number of threads to parallel")
     args = parser.parse_args()

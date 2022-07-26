@@ -33,8 +33,6 @@ Compile the extension module brought from [Occupancy_Networks](https://github.co
 python setup.py build_ext --inplace
 ```
 
-
-
 ## Data
 
 We first voxelized PartNet shapes and scale each part to $64^3$ resolution. We provide data for three categories: chair, table, lamp. Please use [link1(PKU disk)](https://disk.pku.edu.cn:443/link/DAFE87E0FB3FD1B61B4E99BDE19B58F3) or [link2(Google Drive)](https://drive.google.com/drive/folders/1QJBhyECm8-GN_m8PnrtuptCalymUYepb?usp=sharing) to download the voxelized PartNet shapes and exact the file to `data/` folder, e.g.

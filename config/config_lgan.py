@@ -97,7 +97,7 @@ class LatentGANConfig(object):
         group.add_argument('--data_root', type=str, help="file path to data", required=True)
         group.add_argument('--category', type=str, default="Chair", choices=['Chair', 'Table', 'Lamp'],
                            help="shape category name")
-        group.add_argument('--num_workers', type=int, default=8, help="number of workers for data loading")
+        group.add_argument('--num_workers', type=int, default=1, help="number of workers for data loading")
 
     def _add_network_config_(self, parser):
         """add hyperparameters for network architecture"""

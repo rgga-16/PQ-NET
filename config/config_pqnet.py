@@ -90,7 +90,7 @@ class PQNetConfig(object):
     def _add_basic_config_(self, parser):
         """add general hyperparameters"""
         group = parser.add_argument_group('basic')
-        group.add_argument('--proj_dir', type=str, default="proj_log",
+        group.add_argument('--proj_dir', type=str, default="log",
                            help="path to project folder where experiment logs/models will be saved")
         group.add_argument('--exp_name', type=str, default=None, help="name of this experiment. "
                            "Automatically generated based on data category if not provided.")
@@ -105,7 +105,7 @@ class PQNetConfig(object):
         group.add_argument('--data_root', type=str, default="data", help="file path to data")
         group.add_argument('--category', type=str, default="Chair", choices=['Chair', 'Table', 'Lamp'],
                            help="shape category name")
-        group.add_argument('--num_workers', type=int, default=8, help="number of workers for data loading")
+        group.add_argument('--num_workers', type=int, default=1, help="number of workers for data loading")
         group.add_argument('--resolution', type=int, default=64, help="sample points resolution")
         group.add_argument('--points_batch_size', type=int, default=16*16*16*4,
                            help="number of points of each shape for one step when training part ae")
