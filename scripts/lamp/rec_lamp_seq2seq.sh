@@ -4,4 +4,4 @@ python test.py --rec \
                 --category Lamp \
                 --ckpt 1000 \
                 --format voxel \
-                --by_part False
+                --by_part True
