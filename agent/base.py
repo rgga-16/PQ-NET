@@ -111,6 +111,17 @@ class BaseAgent(object):
         """one step of training"""
         self.net.train()
 
+        """
+        bs=40
+        data:
+        vox3d (bs, 1, 64,64,64)
+        points(bs,4096,3)
+        values(bs,4096,1)
+        n_parts(bs)
+        part_idx(bs)
+        path(bs)
+        """
+
         outputs, losses = self.forward(data)
 
         self.update_network(losses)

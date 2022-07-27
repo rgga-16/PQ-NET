@@ -41,7 +41,7 @@ We first voxelized PartNet shapes and scale each part to $64^3$ resolution. We p
 cd data
 tar -xvf Lamp.tar.gz
 ```
-
+<!-- Data pre-processing step to get sampled points and SDF values. -->
 Then run `data/sample_points_from_voxel.py` to sampled paired points and signed values, e.g:
 
 ```bash

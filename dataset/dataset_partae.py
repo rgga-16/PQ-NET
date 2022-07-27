@@ -30,8 +30,8 @@ class PartAEDataset(Dataset):
             shape_h5_path = os.path.join(self.data_root, name + '.h5')
             if not os.path.exists(shape_h5_path):  # check file existence
                 continue
-            parts_info.extend([(shape_h5_path, x) for x in range(nparts_dict[name])])
-
+            nparts = nparts_dict[name]
+            parts_info.extend([(shape_h5_path, x) for x in range(nparts)])
         return parts_info
 
     def __getitem__(self, index):
@@ -47,6 +47,7 @@ class PartAEDataset(Dataset):
             data_points = data_points[indices]
             data_values = data_values[indices]
 
+        
         batch_voxels = torch.tensor(parts_voxel.astype(np.float), dtype=torch.float32).unsqueeze(0)  # (1, dim, dim, dim)
         batch_points = torch.tensor(data_points, dtype=torch.float32)  # (points_batch_size, 3)
         batch_values = torch.tensor(data_values, dtype=torch.float32)  # (points_batch_size, 1)
