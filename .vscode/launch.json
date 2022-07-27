@@ -32,6 +32,39 @@
             ],
             "console": "integratedTerminal",
             "justMyCode": true
+        },
+        {
+            "name": "Train: Chair PartAE",
+            "type": "python",
+            "request": "launch",
+            "program": "train.py",
+            "args": [
+                "--module", "part_ae",
+                "--data_root", "data",
+                "--category", "Chair",
+                "--resolution", "16",
+                "--nr_epochs", "30",
+                "--batch_size", "12",
+                "--lr", "5e-4",
+                "--lr_step_size", "350",
+                "--save_frequency", "50",
+                "-g", "0,1",
+                "--vis",
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "Convert H5 Vox",
+            "type": "python",
+            "request": "launch",
+            "program": ".\\voxelization\\convert_h5_vox.py",
+            "args": [
+                "--src", ".\\data\\Chair_raw",
+                "--out", ".\\data\\Chair_processed",
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
         }
     ]
 }
