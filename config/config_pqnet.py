@@ -90,7 +90,7 @@ class PQNetConfig(object):
     def _add_basic_config_(self, parser):
         """add general hyperparameters"""
         group = parser.add_argument_group('basic')
-        group.add_argument('--proj_dir', type=str, default="log",
+        group.add_argument('--proj_dir', type=str, default="proj_log",
                            help="path to project folder where experiment logs/models will be saved")
         group.add_argument('--exp_name', type=str, default=None, help="name of this experiment. "
                            "Automatically generated based on data category if not provided.")

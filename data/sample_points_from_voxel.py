@@ -1,9 +1,10 @@
+from concurrent.futures import process
 import numpy as np
 import os
 import h5py
 import argparse
 from joblib import Parallel, delayed
-
+from tqdm import tqdm
 
 def ensure_dir(path):
     """
@@ -66,7 +67,7 @@ def sample_points_from_vox3d(voxel_model_64, dim_voxel, batch_size, d=2, sigma=0
     exceed = 0
 
     # sample points near surface
-    sample_points = np.zeros([batch_size, 3], np.float)
+    sample_points = np.zeros([batch_size, 3], float)
     sample_values = np.zeros([batch_size, 1], np.uint8)
     batch_size_counter = 0
     voxel_model_flag = np.zeros_like(voxel_model, dtype=np.uint8)
@@ -149,7 +150,7 @@ def process_one(src_shape_hdf5_path):
         #     is_processed = True
         parts_voxel = fp['parts_voxel_scaled{}'.format(64)][:]
         n_parts = fp.attrs['n_parts']
-
+        items = list(fp.items())
     # sample points at resolution 64x64x64
     dim_voxel = 64
     batch_size = 32 * 32 * 32
@@ -178,7 +179,7 @@ def process_one(src_shape_hdf5_path):
             del fp['values_64']
         except:
             pass
-        fp.create_dataset("points_{}".format(dim_voxel), [n_parts, batch_size, 3], np.float, compression=9, data=parts_points)
+        fp.create_dataset("points_{}".format(dim_voxel), [n_parts, batch_size, 3], float, compression=9, data=parts_points)
         fp.create_dataset("values_{}".format(dim_voxel), [n_parts, batch_size, 1], np.uint8, compression=9, data=parts_values)
 
     # sample points at resolution 32x32x32
@@ -209,7 +210,7 @@ def process_one(src_shape_hdf5_path):
             del fp['values_32']
         except:
             pass
-        fp.create_dataset("points_{}".format(dim_voxel), [n_parts, batch_size, 3], np.float, compression=9, data=parts_points)
+        fp.create_dataset("points_{}".format(dim_voxel), [n_parts, batch_size, 3], float, compression=9, data=parts_points)
         fp.create_dataset("values_{}".format(dim_voxel), [n_parts, batch_size, 1], np.uint8, compression=9, data=parts_values)
 
     # sample points at resolution 16x16x16
@@ -240,14 +241,14 @@ def process_one(src_shape_hdf5_path):
             del fp['values_16']
         except:
             pass
-        fp.create_dataset("points_{}".format(dim_voxel), [n_parts, batch_size, 3], np.float, compression=9, data=parts_points)
+        fp.create_dataset("points_{}".format(dim_voxel), [n_parts, batch_size, 3], float, compression=9, data=parts_points)
         fp.create_dataset("values_{}".format(dim_voxel), [n_parts, batch_size, 1], np.uint8, compression=9, data=parts_values)
 
 
 def main():
     parser = argparse.ArgumentParser()
     # parser.add_argument('--src', type=str, default='data', help="file path to source data")
-    parser.add_argument('--src', type=str, default="/home/fun-linux/Documents/Rgee Gallega/DL-Projects/Datasets/VoxelizedPartNet", help="file path to source data")
+    parser.add_argument('--src', type=str, default="data", help="file path to source data")
     parser.add_argument('--category', type=str, required=True, help="shape category")
     parser.add_argument('-P', '--process', type=int, default=10, help="number of threads to parallel")
     args = parser.parse_args()
@@ -262,7 +263,12 @@ def main():
 
     paths = [os.path.join(class_dir, name) for name in shape_names]
 
-    Parallel(n_jobs=args.process, verbose=2)(delayed(process_one)(path) for path in paths)
+    # Parallel(n_jobs=args.process, verbose=2)(delayed(process_one)(path) for path in paths)
+    npaths = len(paths)
+    for i in tqdm(range(npaths)): 
+        path = paths[i]
+        process_one(path)
+    # (process_one(path) for path in paths)
 
 
 if __name__ == '__main__':

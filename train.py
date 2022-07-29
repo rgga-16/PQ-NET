@@ -65,9 +65,10 @@ def main():
         for b, data in enumerate(pbar):
 
             """
+            Data format for AE training
             bs=40
             data:
-            vox3d (bs, 1, 64,64,64)
+            vox3d (bs, 1, 64,64,64). This is a part.
             points(bs,4096,3)
             values(bs,4096,1)
             n_parts(bs)
@@ -75,8 +76,23 @@ def main():
             path(bs)
             """
 
+            """
+            Data format for Seq2Seq training
+            bs=64
+            data:
+            vox3d (bs, n_parts, 1, 64,64,64). This is a part.
+            n_parts (bs)
+            path(bs) file paths to the .h5 files.
+            sign(n_parts,bs,1)
+            mask(n_parts,bs,1)
+            cond(bs,6)
+            affine_input(n_parts,bs,6). affine is concat(translations, size) Concatenated with geometry feature.
+            affine_target(n_parts,bs,6)
+            """
+
             vox = data['vox3d'].squeeze().numpy()
-            show_voxels(vox,n_rows=3)
+            whole_vox = np.clip(np.sum(vox,axis=0,keepdims=True),0,1)
+            show_voxels(np.concatenate([whole_vox,vox],axis=0),n_rows=1)
 
 
 

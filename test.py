@@ -66,7 +66,7 @@ def decode(config):
 
     # load source h5 file
     with h5py.File(config.fake_z_path, 'r') as fp:
-        all_zs = fp['zs'][:]
+        all_zs = fp['zs'][:] #(2000,1024)
 
     # output dest
     fake_name = config.fake_z_path.split('/')[-1].split('.')[0]
@@ -77,13 +77,14 @@ def decode(config):
     # decoding
     pbar = tqdm(range(all_zs.shape[0]))
     for i in pbar:
-        z = all_zs[i]
-        z1, z2 = np.split(z, 2)
-        z = np.stack([z1, z2])
-        z = torch.tensor(z, dtype=torch.float32).unsqueeze(1).cuda()
+        z = all_zs[i] #z(1024,)
+        z1, z2 = np.split(z, 2) #z1(512,) , z2(512,)
+        z = np.stack([z1, z2]) #z(2,512)
+        z = torch.tensor(z, dtype=torch.float32).unsqueeze(1).cuda() #z(2,1,512)
         with torch.no_grad():
             pqnet.decode_seq(z)
-            output_shape = pqnet.generate_shape(format=config.format, by_part=config.by_part)
+            #output_shape(64,64,64) [0,1] or [0,n_parts] if by_part=True
+            output_shape = pqnet.generate_shape(format=config.format, by_part=config.by_part) 
 
         data_id = "%04d" % i
         save_output(output_shape, data_id, save_dir, format=config.format)

@@ -89,17 +89,18 @@ class PQNET(object):
 
     def encode_seq(self, input_seq):
         """run seq2seq encoder to encode input part sequence"""
-        hidden = self.seq2seq.infer_encoder(input_seq)
+        hidden = self.seq2seq.infer_encoder(input_seq) #hidden(2,1,256)
         return hidden
 
     def decode_seq(self, hidden_code, length=None):
         """run seq2seq decoder to decode part sequence"""
         output_seq, output_stop = self.seq2seq.infer_decoder_stop(hidden_code, length)
 
-        pred_n_parts = output_seq.size(0)
-        self.output_part_codes = output_seq[:, :, :-self.boxparam_size].detach()
-        self.output_affine = output_seq[:, :, -self.boxparam_size:].detach().cpu().numpy()
-        self.n_parts = pred_n_parts
+        #output_seq(n_parts,1,134)
+        pred_n_parts = output_seq.size(0) #pred_n_parts(n_parts)
+        self.output_part_codes = output_seq[:, :, :-self.boxparam_size].detach() #self.output_part_codes(n_parts,1,128)
+        self.output_affine = output_seq[:, :, -self.boxparam_size:].detach().cpu().numpy() #self.output_affine(n_parts,1,6)
+        self.n_parts = pred_n_parts #self.n_parts(n_parts)
 
     def reconstruct_seq(self, input_seq):
         """run seq2seq to reconstruct input sequence"""
@@ -108,7 +109,11 @@ class PQNET(object):
     def reconstruct(self, data):
         """reconstruct input data"""
         self.set_data(data)
-        self.decode_seq(self.encode_seq(self.input_seq), length=self.input_seq.size(0))
+
+        #self.input_seq(4,1,140)
+        #hidden (2,1,512)
+        hidden = self.encode_seq(self.input_seq)
+        self.decode_seq(hidden, length=self.input_seq.size(0))
 
     def encode(self, data):
         """encode input data to shape latent space"""

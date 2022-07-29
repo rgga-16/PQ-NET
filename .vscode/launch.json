@@ -13,6 +13,18 @@
             "justMyCode": true
         },
         {
+            "name": "Sample Points",
+            "type": "python",
+            "request": "launch",
+            "program": "./data/sample_points_from_voxel.py",
+            "args": [
+                "--src", "data",
+                "--category","Airplane",
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
             "name": "Train: Lamp PartAE",
             "type": "python",
             "request": "launch",
@@ -65,6 +77,100 @@
             ],
             "console": "integratedTerminal",
             "justMyCode": true
-        }
+        },
+        {
+            "name": "Test: Rec Lamp Seq2Seq",
+            "type": "python",
+            "request": "launch",
+            "program": "test.py",
+            "args": [
+                "--rec",
+                "--module", "seq2seq",
+                "--data_root", "data",
+                "--category", "Lamp",
+                "--ckpt", "1000",
+                "--format", "voxel",
+                "--by_part", "True",
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+
+        // python latentGAN.py --test \
+        //             --data_root proj_log/pqnet-PartNet-Lamp/results/enc-ckpt-1000/train \
+        //             --category Lamp \
+        //             --ckpt 80000 \
+        //             --n_samples 2000 \
+        //             -g 0
+        {
+            "name": "Test: Lamp LGAN",
+            "type": "python",
+            "request": "launch",
+            "program": "latentGAN.py",
+            "args": [
+                "--test",
+                "--data_root", "proj_log/pqnet-PartNet-Lamp/results/enc-ckpt-1000/train",
+                "--category", "Lamp",
+                "--ckpt", "80000",
+                "--n_samples", "2000",
+                "-g", "0",
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        // python test.py --dec \
+        //         --module seq2seq \
+        //         --data_root data \
+        //         --category Lamp \
+        //         --ckpt 1000 \
+        //         --by_part False \
+        //         --format voxel \
+        //         --fake_z_path proj_log/pqnet-PartNet-Lamp/results/fake_z_ckpt80000_num2000.h5
+        {
+            "name": "Test: Lamp Decode",
+            "type": "python",
+            "request": "launch",
+            "program": "test.py",
+            "args": [
+                "--dec",
+                "--module", "seq2seq",
+                "--data_root", "data",
+                "--category", "Lamp",
+                "--ckpt", "1000",
+                "--by_part", "True",
+                "--format", "mesh",
+                "--fake_z_path", "proj_log/pqnet-PartNet-Lamp/results/fake_z_ckpt80000_num2000.h5",
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        // python train.py --module seq2seq \
+        //         --data_root data \
+        //         --category Lamp \
+        //         --nr_epochs 1000 \
+        //         --batch_size 64 \
+        //         --lr 1e-3 \
+        //         --save_frequency 500 \
+        //         -g 0 \
+        //         --vis
+        {
+            "name": "Train: Lamp Seq2Seq",
+            "type": "python",
+            "request": "launch",
+            "program": "train.py",
+            "args": [
+                "--module", "seq2seq",
+                "--data_root", "data",
+                "--category", "Lamp",
+                "--nr_epochs", "1000",
+                "--batch_size", "64",
+                "--lr", "1e-3",
+                "--save_frequency", "500",
+                "-g", "0", 
+                "--vis"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
     ]
 }
