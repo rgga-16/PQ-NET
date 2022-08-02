@@ -4,6 +4,7 @@ import os
 import numpy as np
 from tqdm import tqdm
 from joblib import Parallel, delayed
+import argparse
 
 VOX_DIM = 64
 
@@ -59,7 +60,10 @@ def sparse2solid(shape_name, class_dir, out_class_dir):
     path = os.path.join(class_dir, shape_name)
     with h5py.File(path, 'r') as data_dict:
         n_parts = data_dict.attrs['n_parts']
+        # shape_parts_voxel is voxel(64,64,64) with values from 0 to n_parts. [1,n_parts] indicate part labels.
         shape_parts_voxel = data_dict['shape_voxel{}'.format(dim_voxel)][:]
+        items=list(data_dict.items())
+        print()
 
     d = 1
 
@@ -132,7 +136,7 @@ def main():
     shape_names = sorted(os.listdir(class_dir))
     shape_names = [x for x in shape_names if x[-3:] == '.h5']
 
-    Parallel(n_jobs=-1, verbose=2)(delayed(sparse2solid)(name, class_dir, out_class_dir) for name in shape_names)
+    Parallel(n_jobs=1, verbose=2)(delayed(sparse2solid)(name, class_dir, out_class_dir) for name in shape_names)
 
 if __name__ == '__main__':
     main()

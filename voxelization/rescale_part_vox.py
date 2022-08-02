@@ -4,6 +4,7 @@ import os
 import numpy as np
 from tqdm import tqdm
 from skimage.transform import resize
+import argparse
 from joblib import Parallel, delayed
 
 VOX_DIM = 64
