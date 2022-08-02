@@ -4,6 +4,10 @@
 data/Chair
 data/Lamp 
 data/Table 
+data/Airplane
+voxelization/backup
+voxelization/refined
+voxelization/voxelized
 
 proj_log/pqnet-PartNet-Chair
 proj_log/pqnet-PartNet-Lamp
