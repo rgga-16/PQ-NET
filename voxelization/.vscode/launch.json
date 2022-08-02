@@ -1,0 +1,53 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "Convert H5 Vox",
+            "type": "python",
+            "request": "launch",
+            "program": "convert_h5_vox.py",
+            "args": [
+                "--src", "voxelized/Airplane",
+                "--out", "refined/Airplane"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        // python fill_part_solid.py --src $2 --out $2_solid
+        {
+            "name": "Fill Part Solid",
+            "type": "python",
+            "request": "launch",
+            "program": "fill_part_solid.py",
+            "args": [
+                "--src", "refined/Airplane",
+                "--out", "refined/Airplane_solid"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        // python rescale_part_vox.py --src $2_solid
+        {
+            "name": "Rescale Part Vox",
+            "type": "python",
+            "request": "launch",
+            "program": "rescale_part_vox.py",
+            "args": [
+                "--src", "refined/Airplane_solid",
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+    ]
+}

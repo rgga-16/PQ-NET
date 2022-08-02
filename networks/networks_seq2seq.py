@@ -116,10 +116,12 @@ class Seq2SeqAE(nn.Module):
             h_n: (num_layers * num_directions, batch, hidden_size)
         """
         encoder_init_hidden = self.encoder.init_hidden.repeat(1, batch_size, 1).cuda()
+
+        #hidden(4,1,256)
         _, hidden = self.encoder(input_seq, encoder_init_hidden)
-        hidden = hidden.view(self.n_layer, 2, batch_size, -1)
-        hidden0, hidden1 = torch.split(hidden, 1, 1)
-        hidden = torch.cat([hidden0.squeeze(1), hidden1.squeeze(1)], 2)
+        hidden = hidden.view(self.n_layer, 2, batch_size, -1) #hidden(2,2,1,256)
+        hidden0, hidden1 = torch.split(hidden, 1, 1)# hidden0(2,1,1,256), hidden1(2,1,1,256)
+        hidden = torch.cat([hidden0.squeeze(1), hidden1.squeeze(1)], 2) #hidden(2,1,512)
         # hidden = hidden[-1]
         return hidden
 
@@ -148,6 +150,8 @@ class Seq2SeqAE(nn.Module):
         decoder_outputs = []
         stop_signs = []
         decoder_input = self.decoder.init_input.detach().repeat(1, 1, 1).cuda()
+
+        #self.max_length = 10. So maximum = 9 parts.
         for di in range(self.max_length):
             decoder_output, decoder_hidden, output_seq, stop_sign = self.decoder(decoder_input, decoder_hidden)
             decoder_outputs.append(output_seq)
@@ -165,7 +169,6 @@ class Seq2SeqAE(nn.Module):
 
     def forward(self, input_seq, target_seq, teacher_forcing_ratio=0.5):
         """
-
         :param input_seq: (seq_len, batch_size, feature_dim) PackedSequence
         :param target_seq: (seq_len, batch_size, feature_dim)
         :param teacher_forcing_ratio: float

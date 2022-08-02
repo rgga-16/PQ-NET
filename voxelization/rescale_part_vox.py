@@ -40,6 +40,7 @@ def scale_parts(path):
     dim_voxel = vox_dim =  VOX_DIM
     # path = "/home/wurundi/PycharmProjects/PartGen/scripts/sampling/1282.h5"
     with h5py.File(path, 'r') as data_dict:
+        items = list(data_dict.items())
         n_parts = data_dict.attrs['n_parts']
         parts_voxel = data_dict['parts_voxel{}'.format(vox_dim)][:]
 
@@ -66,6 +67,7 @@ def scale_parts(path):
         midpoint = (mins + maxs) / 2.0
 
         scale = dim_voxel / np.max(axis_lengths)
+
         # bbox_voxel_scaled = ndimage.zoom(bbox_voxel, scale, mode='nearest')
         bbox_voxel_scaled = resize(bbox_voxel, axis_lengths * scale, mode='constant')
         bbox_voxel_scaled = np.asarray(bbox_voxel_scaled >= 0.5, dtype=np.bool)
@@ -118,7 +120,8 @@ def main():
     shape_names = [x for x in shape_names if x[-3:] == '.h5']
 
     paths = [os.path.join(class_dir, shape_name) for shape_name in shape_names]
-    Parallel(n_jobs=-1, verbose=2)(delayed(scale_parts)(path) for path in paths)
+    # Parallel(n_jobs=-1, verbose=2)(delayed(scale_parts)(path) for path in paths)
+    Parallel(n_jobs=1, verbose=2)(delayed(scale_parts)(path) for path in paths)
 
 if __name__ == '__main__':
     main()
