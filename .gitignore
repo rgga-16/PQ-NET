@@ -8,6 +8,7 @@ data/Airplane
 voxelization/backup
 voxelization/refined
 voxelization/voxelized
+data/Chair_raw
 
 proj_log/pqnet-PartNet-Chair
 proj_log/pqnet-PartNet-Lamp

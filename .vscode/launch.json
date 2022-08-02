@@ -12,8 +12,18 @@
             "console": "integratedTerminal",
             "justMyCode": true
         },
-
-        
+        {
+            "name": "Convert H5 Vox",
+            "type": "python",
+            "request": "launch",
+            "program": ".\\voxelization\\convert_h5_vox.py",
+            "args": [
+                "--src", ".\\data\\Chair_raw",
+                "--out", ".\\data\\Chair_processed",
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
         {
             "name": "Sample Points",
             "type": "python",
@@ -49,20 +59,6 @@
             "console": "integratedTerminal",
             "justMyCode": true
         },
-        {
-            "name": "Convert H5 Vox",
-            "type": "python",
-            "request": "launch",
-            "program": ".\\voxelization\\convert_h5_vox.py",
-            "args": [
-                "--src", ".\\data\\Chair_raw",
-                "--out", ".\\data\\Chair_processed",
-            ],
-            "console": "integratedTerminal",
-            "justMyCode": true
-        },
-
-
         // Lamp 
         {
             "name": "Train: Lamp PartAE",
@@ -102,6 +98,40 @@
             "console": "integratedTerminal",
             "justMyCode": true
         },
+        {
+            "name": "Convert H5 Vox",
+            "type": "python",
+            "request": "launch",
+            "program": ".\\voxelization\\convert_h5_vox.py",
+            "args": [
+                "--src", ".\\data\\Chair_raw",
+                "--out", ".\\data\\Chair_afterconverth5vox",
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        // # fill inner region to make voxel solid
+        // python fill_part_solid.py --src $2 --out $2_solid
+        {
+            "name": "Fill Part Solid",
+            "type": "python",
+            "request": "launch",
+            "program": ".\\voxelization\\fill_part_solid.py",
+            "args": [
+                "--src", ".\\data\\Chair_raw",
+                "--out", ".\\data\\Chair_afterfillpartsolid",
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true,
+        },
+
+
+        // python latentGAN.py --test \
+        //             --data_root proj_log/pqnet-PartNet-Lamp/results/enc-ckpt-1000/train \
+        //             --category Lamp \
+        //             --ckpt 80000 \
+        //             --n_samples 2000 \
+        //             -g 0
         {
             "name": "Test: Lamp LGAN",
             "type": "python",
