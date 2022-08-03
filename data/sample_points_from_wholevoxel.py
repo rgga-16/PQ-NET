@@ -143,48 +143,7 @@ def sample_points_from_vox3d(voxel_model_64, dim_voxel, batch_size, d=2, sigma=0
     return sample_points, sample_values, exceed, bbox_ratio
 
 
-def process_one(src_shape_hdf5_path):
-    # read source voxel data
-    with h5py.File(src_shape_hdf5_path, 'r') as fp:
-        # if 'points_64' in fp:
-        #     is_processed = True
-        parts_voxel = fp['parts_voxel_scaled{}'.format(64)][:]
-        n_parts = fp.attrs['n_parts']
-        items = list(fp.items())
-    # sample points at resolution 64x64x64
-    dim_voxel = 64
-    batch_size = 32 * 32 * 32
-    parts_points = []
-    parts_values = []
-    bbox_ratios = 0
-
-    try:
-        for i in range(n_parts):
-            sample_points, sample_values, exceed, bbox_ratio = sample_points_from_vox3d(
-                parts_voxel[i], dim_voxel, batch_size)
-
-            parts_points.append(sample_points)
-            parts_values.append(sample_values)
-            bbox_ratios += bbox_ratio
-    except RuntimeError as e:
-        print(e, 'shape_name:{}'.format(src_shape_hdf5_path.split('/')[-1]), dim_voxel)
-        return
-
-    parts_points = np.stack(parts_points, axis=0)
-    parts_values = np.stack(parts_values, axis=0)
-
-    with h5py.File(src_shape_hdf5_path, 'a') as fp:
-        try:
-            del fp['points_64']
-            del fp['values_64']
-        except:
-            pass
-        fp.create_dataset("points_{}".format(dim_voxel), [n_parts, batch_size, 3], float, compression=9, data=parts_points)
-        fp.create_dataset("values_{}".format(dim_voxel), [n_parts, batch_size, 1], np.uint8, compression=9, data=parts_values)
-
-    # sample points at resolution 32x32x32
-    dim_voxel = 32
-    batch_size = 16 * 16 * 16 * 2
+def samplepart_points_and_values(path,parts_voxel, n_parts,dim_voxel,batch_size):
     parts_points = []
     parts_values = []
     bbox_ratios = 0
@@ -192,63 +151,86 @@ def process_one(src_shape_hdf5_path):
     try:
         for i in range(n_parts):
             part_voxel = parts_voxel[i]
-            sample_points, sample_values, exceed, bbox_ratio = sample_points_from_vox3d(
-                parts_voxel[i], dim_voxel, batch_size)
-
+            sample_points, sample_values, exceed, bbox_ratio = sample_points_from_vox3d(part_voxel, dim_voxel, batch_size)
             parts_points.append(sample_points)
             parts_values.append(sample_values)
             bbox_ratios += bbox_ratio
     except RuntimeError as e:
-        print(e, 'shape_name:{}'.format(src_shape_hdf5_path.split('/')[-1]), dim_voxel)
+        print(e, 'shape_name:{}'.format(path.split('/')[-1]), dim_voxel)
         return
 
     parts_points = np.stack(parts_points, axis=0)
     parts_values = np.stack(parts_values, axis=0)
 
-    with h5py.File(src_shape_hdf5_path, 'a') as fp:
+    with h5py.File(path, 'a') as fp:
         try:
-            del fp['points_32']
-            del fp['values_32']
+            del fp[f'partpoints_{dim_voxel}']
+            del fp[f'partvalues_{dim_voxel}']
         except:
             pass
-        fp.create_dataset("points_{}".format(dim_voxel), [n_parts, batch_size, 3], float, compression=9, data=parts_points)
-        fp.create_dataset("values_{}".format(dim_voxel), [n_parts, batch_size, 1], np.uint8, compression=9, data=parts_values)
+        fp.create_dataset(f"partpoints_{dim_voxel}", [n_parts, batch_size, 3], float, compression=9, data=parts_points)
+        fp.create_dataset(f"partvalues_{dim_voxel}", [n_parts, batch_size, 1], np.uint8, compression=9, data=parts_values)
+
+def samplewhole_points_and_values(path,wholevoxel,dim_voxel,batch_size):
+    points = []
+    values = []
+    bbox_ratios = 0
+
+    try:
+        sample_points, sample_values, exceed, bbox_ratio = sample_points_from_vox3d(wholevoxel, dim_voxel, batch_size)
+        points.append(sample_points)
+        values.append(sample_values)
+        bbox_ratios += bbox_ratio
+    except RuntimeError as e:
+        print(e, 'shape_name:{}'.format(path.split('/')[-1]), dim_voxel)
+        return
+    
+    points = np.stack(points, axis=0)
+    values = np.stack(values, axis=0)
+
+    with h5py.File(path, 'a') as fp:
+        try:
+            del fp[f'wholepoints_{dim_voxel}']
+            del fp[f'wholevalues_{dim_voxel}']
+        except:
+            pass
+        fp.create_dataset(f"wholepoints_{dim_voxel}", [1, batch_size, 3], float, compression=9, data=points)
+        fp.create_dataset(f"wholevalues_{dim_voxel}", [1, batch_size, 1], np.uint8, compression=9, data=values)
+    return
+
+
+def process_one(src_shape_hdf5_path):
+    
+    # read source voxel data
+
+    with h5py.File(src_shape_hdf5_path, 'r') as fp:
+        whole_voxel = fp[f'shape_voxel{64}'][:]
+        parts_voxel = fp['parts_voxel_scaled{}'.format(64)][:]
+        n_parts = fp.attrs['n_parts']
+        items = list(fp.items())
+    
+    # sample points at resolution 64x64x64
+    dim_voxel = 64
+    batch_size = 32 * 32 * 32
+    samplepart_points_and_values(src_shape_hdf5_path,parts_voxel,n_parts,dim_voxel,batch_size)
+    samplewhole_points_and_values(src_shape_hdf5_path,whole_voxel,dim_voxel,batch_size)
+
+    # sample points at resolution 32x32x32
+    dim_voxel = 32
+    batch_size = 16 * 16 * 16 * 2
+    samplepart_points_and_values(src_shape_hdf5_path,parts_voxel,n_parts,dim_voxel,batch_size)
+    samplewhole_points_and_values(src_shape_hdf5_path,whole_voxel,dim_voxel,batch_size)
+
 
     # sample points at resolution 16x16x16
     dim_voxel = 16
     batch_size = 16 * 16 * 16
-    parts_points = []
-    parts_values = []
-    bbox_ratios = 0
-
-    try:
-        for i in range(n_parts):
-            sample_points, sample_values, exceed, bbox_ratio = sample_points_from_vox3d(
-                parts_voxel[i], dim_voxel, batch_size)
-
-            parts_points.append(sample_points)
-            parts_values.append(sample_values)
-            bbox_ratios += bbox_ratio
-    except RuntimeError as e:
-        print(e, 'shape_name:{}'.format(src_shape_hdf5_path.split('/')[-1]), dim_voxel)
-        return
-
-    parts_points = np.stack(parts_points, axis=0)
-    parts_values = np.stack(parts_values, axis=0)
-
-    with h5py.File(src_shape_hdf5_path, 'a') as fp:
-        try:
-            del fp['points_16']
-            del fp['values_16']
-        except:
-            pass
-        fp.create_dataset("points_{}".format(dim_voxel), [n_parts, batch_size, 3], float, compression=9, data=parts_points)
-        fp.create_dataset("values_{}".format(dim_voxel), [n_parts, batch_size, 1], np.uint8, compression=9, data=parts_values)
+    samplepart_points_and_values(src_shape_hdf5_path,parts_voxel,n_parts,dim_voxel,batch_size)
+    samplewhole_points_and_values(src_shape_hdf5_path,whole_voxel,dim_voxel,batch_size)
 
 
 def main():
     parser = argparse.ArgumentParser()
-    # parser.add_argument('--src', type=str, default='data', help="file path to source data")
     parser.add_argument('--src', type=str, default="data", help="file path to source data")
     parser.add_argument('--category', type=str, required=True, help="shape category")
     parser.add_argument('-P', '--process', type=int, default=10, help="number of threads to parallel")
@@ -263,13 +245,12 @@ def main():
     shape_names = [x for x in shape_names if x[-3:] == '.h5']
 
     paths = [os.path.join(class_dir, name) for name in shape_names]
-
-    # Parallel(n_jobs=args.process, verbose=2)(delayed(process_one)(path) for path in paths)
     npaths = len(paths)
+    # Parallel(n_jobs=args.process, verbose=2)(delayed(process_one)(paths[i]) for i in tqdm(range(npaths)))
+    
     for i in tqdm(range(npaths)): 
         path = paths[i]
         process_one(path)
-    # (process_one(path) for path in paths)
 
 
 if __name__ == '__main__':

@@ -1,12 +1,16 @@
 from networks.networks_partae import PartImNetAE
+from networks.networks_wholeae import WholeImNetAE
 from networks.networks_seq2seq import Seq2SeqAE
 from networks.networks_lgan import Generator, Discriminator
+from networks.networks_imgenc import ImageEncoder
 from dataset.data_utils import n_parts_map
 
 
 def get_network(name, config):
     if name == 'part_ae':
         net = PartImNetAE(config.en_n_layers, config.en_f_dim, config.de_n_layers, config.de_f_dim, config.en_z_dim)
+    elif name == 'whole_ae':
+        net = WholeImNetAE(config.en_n_layers, config.en_f_dim, config.de_n_layers, config.de_f_dim, config.en_z_dim)
     elif name == 'seq2seq':
         part_feat_size = config.en_z_dim + config.boxparam_size
         en_input_size = part_feat_size + n_parts_map(config.max_n_parts) + 1
@@ -16,6 +20,8 @@ def get_network(name, config):
         net = Generator(config.n_dim, config.h_dim, config.z_dim)
     elif name == 'D':
         net = Discriminator(config.h_dim, config.z_dim)
+    elif name == 'imgenc':
+        net = ImageEncoder()
     else:
         raise ValueError
     return net

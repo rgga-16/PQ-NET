@@ -94,8 +94,6 @@ def main():
             whole_vox = np.clip(np.sum(vox,axis=0,keepdims=True),0,1)
             show_voxels(np.concatenate([whole_vox,vox],axis=0),n_rows=1)
 
-
-
             # train step
             outputs, losses = tr_agent.train_func(data)
 
