@@ -11,6 +11,7 @@ voxelization/voxelized
 data/Chair_raw
 data/Chair_whole
 data/Chair_whole_points
+data/Chair_whole_points_toy
 
 proj_log/pqnet-PartNet-Chair
 proj_log/pqnet-PartNet-Lamp

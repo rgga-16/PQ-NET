@@ -30,7 +30,8 @@ def show_voxels(voxels,true_threshold=0.5,title='',n_rows=1):
         grid.point_data["values"] = voxel.flatten(order="F")  # Flatten the array!
         grid = grid.threshold(true_threshold, invert=False)
         plotter.subplot(r,c)
-        plotter.add_mesh(grid,name=f'{r}_{c}',show_edges=True)
+        # plotter.add_mesh(grid,name=f'{r}_{c}',show_edges=True)
+        plotter.add_mesh(grid,show_edges=True)
         c+=1
         if c==n_cols:
             r+=1
@@ -91,8 +92,8 @@ def main():
             """
 
             vox = data['vox3d'].squeeze().numpy()
-            whole_vox = np.clip(np.sum(vox,axis=0,keepdims=True),0,1)
-            show_voxels(np.concatenate([whole_vox,vox],axis=0),n_rows=1)
+            # whole_vox = np.clip(np.sum(vox,axis=0,keepdims=True),0,1)
+            # show_voxels(np.concatenate([whole_vox,vox],axis=0),n_rows=1)
 
             # train step
             outputs, losses = tr_agent.train_func(data)

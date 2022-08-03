@@ -25,6 +25,29 @@ def collect_data_id(classname, phase):
 def n_parts_map(n):
     return n - 2
 
+def load_from_hdf5_whole(path, resolution=64, rescale=True):
+    """load part voxel and sampled sdf
+
+    :param path: filepath to h5 data
+    :param resolution: resolution for sampled sdf
+    :param rescale: rescale points value range to 0~1
+    :return:
+    """
+    with h5py.File(path, 'r') as data_dict:
+        whole_voxel = data_dict['shape_voxel64_bool'][:].astype(np.float)
+        # scale = data_dict['scales'][:]
+        # translation = data_dict['translations'][:]
+        nparts =data_dict.attrs["n_parts"]
+        data_points = data_dict['wholepoints_{}'.format(resolution)][:]
+        data_points = np.squeeze(data_points,axis=0)
+        
+        data_values = data_dict['wholevalues_{}'.format(resolution)][:]
+        data_values = np.squeeze(data_values,axis=0)
+        data_values = np.clip(data_values,0,1)
+    if rescale:
+        data_points = data_points / resolution
+    return whole_voxel, data_points, data_values  # , scale, translation
+
 
 def load_from_hdf5_by_part(path, idx, resolution=64, rescale=True):
     """load part voxel and sampled sdf

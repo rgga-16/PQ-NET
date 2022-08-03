@@ -45,7 +45,7 @@ class PQNetConfig(object):
                 self.parallel = True
 
         # max number of parts
-        MAX_N_PARTS_DICT = {"Chair": 9, "Table": 10, "Lamp": 7}
+        MAX_N_PARTS_DICT = {"Chair": 9, "Table": 10, "Lamp": 7, "Chair_whole_points_toy":9, "Chair_whole_points":9}
         self.max_n_parts = MAX_N_PARTS_DICT[args.category]
 
         # pretrain partae path
@@ -96,14 +96,14 @@ class PQNetConfig(object):
                            "Automatically generated based on data category if not provided.")
         group.add_argument('-g', '--gpu_ids', type=str, default="0",
                            help="gpu to use, e.g. 0  0,1,2. CPU not supported.")
-        group.add_argument('--module', type=str, choices=['part_ae', 'seq2seq'], required=True,
+        group.add_argument('--module', type=str, choices=['part_ae', 'seq2seq', 'whole_ae'], required=True,
                            help="which network module to set. use 'seq2seq' when testing.")
 
     def _add_dataset_config_(self, parser):
         """add hyperparameters for dataset configuration"""
         group = parser.add_argument_group('dataset')
         group.add_argument('--data_root', type=str, default="data", help="file path to data")
-        group.add_argument('--category', type=str, default="Chair", choices=['Chair', 'Table', 'Lamp'],
+        group.add_argument('--category', type=str, default="Chair", choices=['Chair', 'Table', 'Lamp','Chair_whole_points_toy','Chair_whole_points'],
                            help="shape category name")
         group.add_argument('--num_workers', type=int, default=1, help="number of workers for data loading")
         group.add_argument('--resolution', type=int, default=64, help="sample points resolution")

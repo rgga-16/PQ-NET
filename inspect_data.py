@@ -109,7 +109,6 @@ def show_voxels(voxels,true_threshold=0.5,title='',n_rows=1):
 datapath = 'data\\Airplane\\1a04e3eab45ca15dd86060f189eb133.h5' #Windows
 datapath = 'data/Airplane/4fd9c86e43a1dea17209009cfb89d4bd.h5' #LInux
 datapath = 'data/Chair/2465.h5' #Linux
-datapath = 'data/Chair_raw/2465.h5' #Linux
 with h5py.File(datapath,'r') as data:
     '''
     dict key-vals
@@ -148,8 +147,36 @@ with h5py.File(datapath,'r') as data:
 
 # Inspecting a data sample from data after running fill_part_solid.
 # datapath = 'data\\Airplane\\1a04e3eab45ca15dd86060f189eb133.h5' #Windows
-datapath = 'voxelization/refined/Airplane/4fd9c86e43a1dea17209009cfb89d4bd.h5' #LInux
+# datapath = 'voxelization/refined/Airplane/4fd9c86e43a1dea17209009cfb89d4bd.h5' #LInux
 # datapath = 'data/Lamp/17897.h5' #LInux
+# with h5py.File(datapath,'r') as data:
+#     '''
+#     dict key-vals
+#     parts_voxel_scaled64: (n_parts,64,64,64)
+#     scales: (n_parts,1)
+#     shape_voxel64: (64,64,64)
+#     size: (n_parts,3)
+#     translations: (n_parts, 3)
+#     points16: (n_parts, 4096,3)
+#     points32: (n_parts, 8192,3)
+#     points64: (n_parts, 32768, 3)
+#     values16: (n_parts, 4096,1)
+#     values32: (n_parts, 8192,1)
+#     values64: (n_parts, 32768,1)
+#     '''
+#     items = list(data.items())
+#     parts = data['parts_voxel64'][:].astype(np.float)
+#     parts_merged = np.clip(np.sum(parts,axis=0,keepdims=True),0,1)
+#     whole = np.expand_dims(data['shape_voxel64'][:].astype(np.float),0)
+#     # scales = data['scales'][:]
+#     # size = data['size'][:]
+#     # translations = data['translations'][:]
+#     show_voxels(np.concatenate([whole,parts_merged,parts],axis=0),n_rows=2)
+#     # show_voxels(whole)
+#     print()
+
+# Inspecting a data sample from processing data. After sampling points on both whole and parts of the voxel.
+datapath = 'data/Chair_whole_points_toy/182.h5' #Linux
 with h5py.File(datapath,'r') as data:
     '''
     dict key-vals
@@ -166,28 +193,34 @@ with h5py.File(datapath,'r') as data:
     values64: (n_parts, 32768,1)
     '''
     items = list(data.items())
-    parts = data['parts_voxel64'][:].astype(np.float)
-    parts_merged = np.clip(np.sum(parts,axis=0,keepdims=True),0,1)
+    parts = data['parts_voxel_scaled64'][:].astype(np.float)
     whole = np.expand_dims(data['shape_voxel64'][:].astype(np.float),0)
-    # scales = data['scales'][:]
-    # size = data['size'][:]
-    # translations = data['translations'][:]
-    show_voxels(np.concatenate([whole,parts_merged,parts],axis=0),n_rows=2)
+    whole_bool = np.expand_dims(data['shape_voxel64_bool'][:].astype(np.float),0)
+    scales = data['scales'][:]
+    size = data['size'][:]
+    translations = data['translations'][:]
+
+    points16 = data['wholepoints_16'][:]
+    points32 = data['wholepoints_32'][:]
+    points64  = data['wholepoints_64'][:]
+
+    values16 = data['wholevalues_16'][:]
+    values32 = data['wholevalues_32'][:]
+    values64 = data['wholevalues_64'][:]
+    show_voxels(np.concatenate([whole,parts],axis=0),n_rows=2)
     # show_voxels(whole)
     print()
 
 
+# shape_names = collect_data_id('Chair', 'train')
+# with open('data/{}_info.json'.format('Chair'), 'r') as fp:
+#     nparts_dict = json.load(fp)
+# parts_info = []
+# for name in shape_names:
+#     shape_h5_path = os.path.join('data\\Chair', name + '.h5')
+#     if not os.path.exists(shape_h5_path):  # check file existence
+#         continue
+#     nparts = nparts_dict[name]
+#     parts_info.extend([(shape_h5_path, x) for x in range(nparts)])
 
-
-shape_names = collect_data_id('Chair', 'train')
-with open('data/{}_info.json'.format('Chair'), 'r') as fp:
-    nparts_dict = json.load(fp)
-parts_info = []
-for name in shape_names:
-    shape_h5_path = os.path.join('data\\Chair', name + '.h5')
-    if not os.path.exists(shape_h5_path):  # check file existence
-        continue
-    nparts = nparts_dict[name]
-    parts_info.extend([(shape_h5_path, x) for x in range(nparts)])
-
-index = 1766
+# index = 1766
