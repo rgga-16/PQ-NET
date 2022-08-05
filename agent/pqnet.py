@@ -41,7 +41,8 @@ class PQNET(object):
         :param parts_voxel:  (n_parts, 1, vox_dim, vox_dim, vox_dim)
         :return: part_codes: (n_parts, en_z_dim)
         """
-        part_codes = self.part_encoder(parts_voxel)  # (n_parts, en_z_dim)
+        # part_codes(n_parts, en_z_dim)
+        part_codes = self.part_encoder(parts_voxel)   #PartAE, encoder portion.
         return part_codes
 
     def infer_part_decoder(self, part_codes, points):
@@ -94,6 +95,8 @@ class PQNET(object):
 
     def decode_seq(self, hidden_code, length=None):
         """run seq2seq decoder to decode part sequence"""
+
+        #hidden(2,1,256)
         output_seq, output_stop = self.seq2seq.infer_decoder_stop(hidden_code, length)
 
         #output_seq(n_parts,1,134)
@@ -188,6 +191,7 @@ class PQNET(object):
             mesh_extractor.update(points, values)
             points = mesh_extractor.query()
 
+        # (274625, 3), (274625,)
         all_points, all_values = mesh_extractor.get_points()
         return all_points, all_values
 
@@ -205,6 +209,7 @@ class PQNET(object):
             points.append(part_points)
             values.append(part_values)
         points, values = self.transform_points(points, values)
+        hello=1
         if format == 'sdf':
             return (points, values)
         elif format == 'voxel':

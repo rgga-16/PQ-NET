@@ -1,9 +1,9 @@
 python train.py --module whole_ae \
                 --data_root data \
-                --category Chair \
+                --category Chair_whole_points \
                 --resolution 16 \
                 --nr_epochs 30 \
-                --batch_size 40 \
+                --batch_size 30 \
                 --lr 5e-4 \
                 --lr_step_size 230 \
                 --save_frequency 50 \
@@ -11,10 +11,10 @@ python train.py --module whole_ae \
                 --vis
 python train.py --module whole_ae \
                 --data_root data \
-                --category Chair \
+                --category Chair_whole_points \
                 --resolution 32 \
                 --nr_epochs 80 \
-                --batch_size 40 \
+                --batch_size 30 \
                 --lr 5e-4 \
                 --lr_step_size 230 \
                 --save_frequency 50 \
@@ -23,10 +23,10 @@ python train.py --module whole_ae \
                 --continue
 python train.py --module whole_ae \
                 --data_root data \
-                --category Chair \
+                --category Chair_whole_points \
                 --resolution 64 \
                 --nr_epochs 250 \
-                --batch_size 40 \
+                --batch_size 30 \
                 --lr 5e-4 \
                 --lr_step_size 230 \
                 --save_frequency 50 \

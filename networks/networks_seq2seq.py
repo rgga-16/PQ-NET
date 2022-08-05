@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import random
+import numpy as np 
 
 
 # RNN
@@ -179,6 +180,12 @@ class Seq2SeqAE(nn.Module):
         batch_size = target_seq.size(1)
         encoder_hidden = self.infer_encoder(input_seq, batch_size)
         decoder_hidden = encoder_hidden # .unsqueeze(0)
+
+        #(2,64,512)
+        decoder_hidden_np = decoder_hidden.detach().cpu().numpy() 
+        mean= np.mean(decoder_hidden_np)
+        std = np.std(decoder_hidden_np)
+
         decoder_outputs, stop_signs = self.infer_decoder(decoder_hidden, target_seq, teacher_forcing_ratio)
         return decoder_outputs, stop_signs
 

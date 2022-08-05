@@ -85,8 +85,8 @@ class WholeImNetAE(nn.Module):
         point_batch_size = points.size(1)
         z = self.encoder(vox3d)  # (shape_batch_size, z_dim)
         # z = torch.cat([z, affine], dim=1)
-        batch_z = z.unsqueeze(1).repeat((1, point_batch_size, 1)).view(-1, z.size(1))
-        batch_points = points.view(-1, 3)
+        batch_z = z.unsqueeze(1).repeat((1, point_batch_size, 1)).view(-1, z.size(1)) #batch_z(n_points,128)
+        batch_points = points.view(-1, 3) #batch_points(n_points,3)
 
         out = self.decoder(batch_points, batch_z)
         out = out.view((shape_batch_size, point_batch_size, -1))

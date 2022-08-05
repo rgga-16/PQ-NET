@@ -139,6 +139,15 @@ class BaseAgent(object):
         self.record_losses(losses, 'validation')
 
         return outputs, losses
+    
+    def test_func(self, data):
+        """one step of test"""
+        self.net.eval()
+
+        with torch.no_grad():
+            outputs,_ = self.forward(data)
+
+        return outputs
 
     def visualize_batch(self, data, mode, **kwargs):
         """write visualization results to tensorboard writer"""

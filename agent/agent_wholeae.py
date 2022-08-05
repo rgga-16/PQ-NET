@@ -24,6 +24,18 @@ class WholeAEAgent(BaseAgent):
     def set_loss_function(self):
         self.criterion = nn.MSELoss().cuda()
 
+    
+    def demo(self, input_vox3d, points):
+        self.net.eval()
+    
+        input_vox3d = input_vox3d.cuda()  # (shape_batch_size, 1, dim, dim, dim)
+        points = points.cuda()  # (shape_batch_size, points_batch_size, 3)
+        
+        with torch.no_grad():
+            output_sdf = self.net(points, input_vox3d)
+
+        return output_sdf
+    
     def forward(self, data):
         input_vox3d = data['vox3d'].cuda()  # (shape_batch_size, 1, dim, dim, dim)
         points = data['points'].cuda()  # (shape_batch_size, points_batch_size, 3)

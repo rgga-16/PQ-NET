@@ -51,6 +51,9 @@ class PQNetConfig(object):
         # pretrain partae path
         if self.partae_modelpath is None and args.module == 'seq2seq':
             self.partae_modelpath = os.path.join(self.exp_dir, "model_part_ae/latest.pth")
+        
+        if self.wholeae_modelpath is None:
+            self.wholeae_modelpath = os.path.join(self.exp_dir, "model_whole_ae/latest.pth")
 
         # create soft link to experiment log directory
         # if not os.path.exists('train_log'):
@@ -124,6 +127,8 @@ class PQNetConfig(object):
         group2.add_argument('--boxparam_size', type=int, default=6, help="dimension for part box parameters")
         group2.add_argument('--hidden_size', type=int, default=256, help="dimension for RNN hidden state")
         group2.add_argument('--partae_modelpath', type=str, default=None, help="file path to pretrained part ae model. "
+                            "If not provided, automatically try to use the lastest model under the same exp_name.")
+        group2.add_argument('--wholeae_modelpath', type=str, default=None, help="file path to pretrained whole ae model. "
                             "If not provided, automatically try to use the lastest model under the same exp_name.")
 
     def _add_training_config_(self, parser):

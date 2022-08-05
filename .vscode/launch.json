@@ -108,12 +108,13 @@
             "args": [
                 "--module", "whole_ae",
                 "--data_root", "data",
-                "--category", "Chair_whole_points_toy",
+                "--category", "Chair_whole_points",
                 "--resolution", "16",
                 "--nr_epochs", "30",
                 "--batch_size", "4",
                 "--lr", "5e-4",
                 "--lr_step_size", "350",
+                "--en_z_dim", "1024",
                 "--save_frequency", "50",
                 "-g", "0,1",
                 "--vis",
@@ -121,20 +122,100 @@
             "console": "integratedTerminal",
             "justMyCode": true
         },
-        // python train.py --module whole_ae \
-        //         --data_root data \
-        //         --category Chair_whole_points_toy \
-        //         --resolution 32 \
-        //         --nr_epochs 80 \
-        //         --batch_size 4 \
-        //         --lr 5e-4 \
-        //         --lr_step_size 230 \
-        //         --save_frequency 50 \
-        //         -g 3,4 \
-        //         --vis \
-        //         --continue
         {
             "name": "Train: Chair WholeAE 32",
+            "type": "python",
+            "request": "launch",
+            "program": "train.py",
+            "args": [
+                "--module", "whole_ae",
+                "--data_root", "data",
+                "--category", "Chair_whole_points",
+                "--resolution", "32",
+                "--nr_epochs", "80",
+                "--batch_size", "4",
+                "--lr", "5e-4",
+                "--lr_step_size", "230",
+                "--en_z_dim", "1024",
+                "--save_frequency", "50",
+                "-g", "3,4",
+                "--vis",
+                "--continue"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "Train: Chair WholeAE 64",
+            "type": "python",
+            "request": "launch",
+            "program": "train.py",
+            "args": [
+                "--module", "whole_ae",
+                "--data_root", "data",
+                "--category", "Chair_whole_points",
+                "--resolution", "64",
+                "--nr_epochs", "250",
+                "--batch_size", "4",
+                "--lr", "5e-4",
+                "--lr_step_size", "230",
+                "--en_z_dim", "1024",
+                "--save_frequency", "50",
+                "-g", "3,4,5",
+                "--vis",
+                "--continue"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "Test: Chair WholeAE 64",
+            "type": "python",
+            "request": "launch",
+            "program": "testae.py",
+            "args": [
+                "--rec",
+                "--module", "whole_ae",
+                "--data_root", "data",
+                "--category", "Chair_whole_points",
+                "--resolution", "64",
+                "--batch_size", "1",
+                "--lr", "5e-4",
+                "--lr_step_size", "230",
+                "--en_z_dim", "1024",
+                "--save_frequency", "50",
+                "-g", "3,4,5",
+                "--vis",
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+
+        // Chair Whole (Toy)
+        {
+            "name": "Train: Chair WholeAE 16 (Toy)",
+            "type": "python",
+            "request": "launch",
+            "program": "train.py",
+            "args": [
+                "--module", "whole_ae",
+                "--data_root", "data",
+                "--category", "Chair_whole_points_toy",
+                "--resolution", "16",
+                "--nr_epochs", "30",
+                "--batch_size", "4",
+                "--lr", "5e-4",
+                "--lr_step_size", "350",
+                "--save_frequency", "50",
+                "--en_z_dim", "1024",
+                "-g", "0,1",
+                "--vis",
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "Train: Chair WholeAE 32 (Toy)",
             "type": "python",
             "request": "launch",
             "program": "train.py",
@@ -149,27 +230,15 @@
                 "--lr_step_size", "230",
                 "--save_frequency", "50",
                 "-g", "3,4",
+                "--en_z_dim", "1024",
                 "--vis",
                 "--continue"
             ],
             "console": "integratedTerminal",
             "justMyCode": true
         },
-
-        // python train.py --module whole_ae \
-        //         --data_root data \
-        //         --category Chair_whole_points_toy \
-        //         --resolution 64 \
-        //         --nr_epochs 250 \
-        //         --batch_size 4 \
-        //         --lr 5e-4 \
-        //         --lr_step_size 230 \
-        //         --save_frequency 50 \
-        //         -g 3,4,5 \
-        //         --vis \
-        //         --continue
         {
-            "name": "Train: Chair WholeAE 64",
+            "name": "Train: Chair WholeAE 64 (Toy)",
             "type": "python",
             "request": "launch",
             "program": "train.py",
@@ -184,6 +253,55 @@
                 "--lr_step_size", "230",
                 "--save_frequency", "50",
                 "-g", "3,4,5",
+                "--en_z_dim", "1024",
+                "--vis",
+                "--continue"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+
+        {
+            "name": "Test: Chair WholeAE 64 (Toy)",
+            "type": "python",
+            "request": "launch",
+            "program": "testae.py",
+            "args": [
+                "--rec",
+                "--module", "whole_ae",
+                "--data_root", "data",
+                "--category", "Chair_whole_points_toy",
+                "--resolution", "64",
+                "--batch_size", "1",
+                "--lr", "5e-4",
+                "--lr_step_size", "230",
+                "--en_z_dim", "1024",
+                "--save_frequency", "50",
+                "-g", "3,4,5",
+                "--vis",
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+
+        {
+            "name": "Test: Coarse to Parts",
+            "type": "python",
+            "request": "launch",
+            "program": "coarse_to_parts.py",
+            "args": [
+                "--rec",
+                "--module", "seq2seq",
+                "--data_root", "data",
+                "--category", "Chair_whole_points_toy",
+                "--resolution", "64",
+                "--nr_epochs", "250",
+                "--batch_size", "1",
+                "--lr", "5e-4",
+                "--lr_step_size", "230",
+                "--save_frequency", "50",
+                "-g", "3,4,5",
+                "--by_part", "True",
                 "--vis",
                 "--continue"
             ],
